@@ -1,9 +1,13 @@
 package com.trycloud.utilities;
 
+import com.github.javafaker.Faker;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
@@ -11,11 +15,21 @@ import java.util.List;
 
 public class BrowserUtil {
 
+    public static List<String> getElementsText(List<WebElement> list){
+        List<String> elemTexts = new ArrayList<>();
+        for (WebElement el : list) {
+            elemTexts.add(el.getAttribute("innerHTML").trim());
+        }
+        return elemTexts;
+    }
+
+
     /**
-     * A method to pause the thread certain seconds
+     * Performs a pause
+     *
      * @param seconds
      */
-    public static void waitFor(int seconds){
+    public static void waitFor(int seconds) {
         try {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException e) {
@@ -25,56 +39,55 @@ public class BrowserUtil {
 
 
     /**
-     *   WebDriverWait wait = new WebDriverWait(Driver.getDriver() ,2  ) ;
-     *         // check of visibility of the errorMsgElm in 2 seconds
+     * Scrolls down to an element using JavaScript
      *
-     *         try {
-     *             wait.until(ExpectedConditions.visibilityOfElementLocated( By.xpath("//span[. ='blablanvalid Login or Password.']") )       );
-     *         }catch (TimeoutException e){
-     *             System.out.println("The error message is = " + e.getMessage());
-     *            // e.printStackTrace();
-     *             System.out.println("We did nnot see the error message element");
-     *         }
-     *
-     *     }
+     * @param element
      */
-
-    /**
-     * This method will check for visibility of element within the time given
-     * @param locator By.id or By.xpath or By.whatever any
-     * @param timeTOWait time to wait
-     * @return true if the element is found within the time and visible , false if not
-     */
-    public static boolean checkVisibilityOfElement(By locator, int timeTOWait){
-
-        boolean result=false;
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver() ,timeTOWait  ) ;
-
-            try {
-                 wait.until(ExpectedConditions.visibilityOfElementLocated( locator)  );
-                 //if above lines does not throw exception we will come to this line and below
-                 result=true;
-              }catch (TimeoutException e){
-                  System.out.println("The error message is = " + e.getMessage());
-                 // e.printStackTrace();
-                  System.out.println("We did nnot see the error message element");
-              }
-
-        return result;
+    public static void scrollToElement(WebElement element) {
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
     /**
-     * A utility method to get the texts out of list of web elements
-     * @param lstOfWebElements the target list of weblement
-     * @return the text inside those web element as List<String>
+     * Selects with visibleText
+     *
+     * @param elementDropdown
+     * @param visibleText
      */
-    public static List<String>getAllText(List<WebElement>lstOfWebElements){
+    public static void selectByVisibleText(WebElement elementDropdown, String visibleText) {
+        Select dropdown = new Select(elementDropdown);
+        dropdown.selectByVisibleText(visibleText);
 
-        List<String>allTextLst=new ArrayList<>();
+    }
 
-        for (WebElement eachElement : lstOfWebElements) {
-            allTextLst.add(eachElement.getText());
+    /**
+     * returns random number between a to b
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int randomNumber(int a, int b) {
+        return new Faker().number().numberBetween(a, b);
+    }
+
+
+
+    public static void hoverOver(WebElement element){
+        new Actions(Driver.getDriver()).moveToElement(element).pause(2000).perform();
+    }
+
+
+    public static boolean isAllSelected(List<WebElement> allFiles){
+
+        for (WebElement file : allFiles) {
+
+            if(!file.isSelected()){
+                return false;
+            }
         }
-        return allTextLst;
+        return true;
     }
+
+
+
 }
