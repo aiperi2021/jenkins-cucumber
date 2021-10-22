@@ -10,35 +10,39 @@ import java.util.List;
 
 public class LoginPage {
 
-    @FindBy(id = "user")
-   public WebElement username;
-
-    @FindBy(id = "password")
-    public WebElement password;
-
-    @FindBy(id = "submit-form")
-    public WebElement login;
-
-
-    @FindBy(xpath = "//p[normalize-space(.)='Wrong username or password.']")
-    public WebElement errorMsg;
-
-    @FindBy()
-    public List<WebElement> modules;
-
-    public LoginPage(){
+    public LoginPage() {
         PageFactory.initElements(Driver.getDriver(), this);
     }
 
-    public void goTo(){
-Driver.getDriver().get(ConfigReader.read("trycloud_url"));
+    @FindBy(id = "user")
+    public WebElement usernameBox;
+
+    @FindBy(id = "password")
+    public WebElement passwordBox;
+
+    @FindBy(id = "submit-form")
+    public WebElement loginButton;
+
+    @FindBy(xpath = "//p[@class='warning wrongPasswordMsg']")
+    public WebElement warningMessage;
+
+
+    public void login(){
+        usernameBox.sendKeys(ConfigReader.read("username"));
+        passwordBox.sendKeys(ConfigReader.read("password"));
+        loginButton.click();
     }
 
     public void login(String username,String password){
-        this.username.sendKeys(username);
-        this.password.sendKeys(password);
-        this.login.click();
+
+        usernameBox.sendKeys(username);
+        passwordBox.sendKeys(password);
+
     }
+
+
+
+
 
 
 }
