@@ -13,7 +13,7 @@ public class TalkConversationStepDefs {
 
     @When("user search user from searchbox")
     public void user_search_user_from_searchbox() {
-        talkPage.conversationBox.sendKeys("User172");
+        talkPage.conversationBox.sendKeys("User7");
         talkPage.allUsers.get(0).click();
     }
 
