@@ -15,7 +15,13 @@ import org.openqa.selenium.safari.SafariDriver;
  * so we are creating this class with technic we learned from Singleton pattern
  */
 public class Driver {
-    private static WebDriver obj ;
+    // InheritableThreadLocal  --> this is like a container, bag, pool.
+    // in this pool we can have separate objects for each thread
+    // for each thread, in InheritableThreadLocal we can have separate object for that thread
+    // driver class will provide separate webdriver object per thread
+
+    private static InheritableThreadLocal<WebDriver> driverPool = new InheritableThreadLocal<>();
+//    private static WebDriver obj ;
 
     private Driver(){ }
 
@@ -27,7 +33,7 @@ public class Driver {
         //read the browser type you want to lunch from properties files
         String browserName = ConfigReader.read("browser");
 
-        if(obj == null){
+        if(driverPool.get() == null){
 
 
             //according to browser type set up driver correctly
@@ -38,34 +44,34 @@ public class Driver {
 //                    obj.
                 case "chrome" :
                     WebDriverManager.chromedriver().setup();
-                    obj=new ChromeDriver();
+                    driverPool.set(new ChromeDriver() );
                     break;
                 case "firefox":
                     WebDriverManager.firefoxdriver().setup();
-                    obj=new FirefoxDriver();
+                    driverPool.set(new FirefoxDriver() );
                     break;
                 case "safari":
                     WebDriverManager.safaridriver().setup();
-                    obj=new SafariDriver();
+                    driverPool.set(new SafariDriver() );
                     break;
                 case "edge":
                     WebDriverManager.edgedriver().setup();
-                    obj=new EdgeDriver();
+                    driverPool.set(new EdgeDriver() );
                     break;
                 case "opera":
                     WebDriverManager.operadriver().setup();
-                    obj =new OperaDriver();
+                    driverPool.set(new OperaDriver() );
                     // other browsers omitted
                     break;
                 default:
-                    obj = null ;
+                    driverPool.set(null);
                     System.out.println("UNKNOWN BROWSER TYPE!!! " + browserName);
             }
 //            System.out.println("One and only created for the first time");
-            return obj ;
+            return driverPool.get();
         }else{
 //            System.out.println("You have it just use existing one");
-            return obj ;
+            return driverPool.get();
 
         }
 
@@ -76,18 +82,16 @@ public class Driver {
      * WebDriver instance to null because you can re-use already quitted driver
      */
     public static void closeBrowser(){
-
         // check if we have WebDriver instance or not
         // basically checking if obj is null or not
         // if not null
         // quit the browser
         // make it null , because once quit it can not be used
-        if(obj != null ){
-            obj.quit();
+        if( driverPool.get() != null ){
+            driverPool.get().quit();
             // so when ask for it again , it gives us not quited fresh driver
-            obj = null ;
+            driverPool.set(null);        //obj = null ;
         }
 
     }
-
 }
