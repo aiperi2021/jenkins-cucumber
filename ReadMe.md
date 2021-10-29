@@ -1,4 +1,25 @@
-# simple-cucumber-demo
+## Introduction 
+This repository contains UI API DB automation test cases, can be run as a suite of Smoke, Regression
+## Requierements vs Recommended modules
+In order to be able to run requieres:
+- IDE 
+- Java (version)
+- Maven (verion)
+- 
+# Installation
+Url for tools 
+
+## Configuration
+In order to get Jenkins installed you need homebrew or ...
+
+## Install a development environment
+Testing implemented (documentation location) with execution
+
+
+
+
+
+
 Basic cucumber framework used for running automation tests on Jenkins.
 
 ## Running locally
