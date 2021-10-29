@@ -8,7 +8,7 @@ pipeline{
 
             steps{
 
-                withMaven(maven: ''){
+                withMaven(maven: 'maven_3_5_0'){
                     sh 'mvn clean install'
 
 
@@ -16,11 +16,11 @@ pipeline{
             }
 
         }
-        stage ('Test Stage'){
+    stage ('Test Stage'){
 
-             steps{
+         steps{
 
-                  withMaven(maven: 'maven_3_5_0'){
+              withMaven(maven: 'maven_3_5_0'){
                        sh 'mvn test'
 
 
@@ -29,46 +29,24 @@ pipeline{
 
 
          }
-                        stage ('Cucumber Report'){
+                              stage ('Cucumber Report'){
 
-                            steps{
+                                     steps{
 
-                                cucumber buildStatus: "UNSTABLE",
-                                    fileIncludedPattern: "**/cucumber.json",
-                                    jsonReportDirectory: 'target'
-
-
+                                         cucumber buildStatus: "UNSTABLE",
+                                             fileIncludedPattern: "**/cucumber.json",
+                                             jsonReportDirectory: 'target'
 
 
-                            }
 
-                        }
+
+                                     }
+
+                                 }
+
 
     }
 
 
 }
 
-
-
-
-
-
-
-node {
-    stage('Clone code') {
-        git 'https://github.com/vasyafomiuk/demo-project.git'
-    }
-
-    stage('Run tests'){
-        if(isUnix()){
-            sh "mvn clean test"
-        } else {
-            bat "mvn clean test"
-        }
-    }
-
-    stage('Generate report'){
-           cucumber failedFeaturesNumber: -1, failedScenariosNumber: -1, failedStepsNumber: -1, fileIncludePattern: '**/*.json', pendingStepsNumber: -1, skippedStepsNumber: -1, sortingMethod: 'ALPHABETICAL', undefinedStepsNumber: -1
-    }
-}
